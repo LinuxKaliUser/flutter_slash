@@ -37,6 +37,7 @@ void main() async {
   );
 }
 
+
 // Game logic handled here
 class FlutterSlashGame extends FlameGame with HasKeyboardHandlerComponents {
   late PlayerCharacter player;
