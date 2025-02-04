@@ -46,37 +46,18 @@ class OptionsMenuState extends State<OptionsMenu> {
                   'Music Volume',
                   style: TextStyle(color: Colors.white),
                 ),
-                Slider(
-                  value: _musicVolume,
-                  min: 0.0,
-                  max: 1.0,
-                  onChanged: (value) {
-                    setState(() {
-                      _musicVolume = value;
-                      widget.game.setBackgroundMusicVolume(value);
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'SFX Volume',
-                  style: TextStyle(color: Colors.white),
-                ),
-                Slider(
-                  value: _sfxVolume,
-                  min: 0.0,
-                  max: 1.0,
-                  onChanged: (value) {
-                    setState(() {
-                      _sfxVolume = value;
-                      widget.game.setBackgroundMusicVolume(value);
-                    });
-                  },
+                Expanded(
+                  child: Slider(
+                    value: _musicVolume,
+                    min: 0.0,
+                    max: 1,
+                    onChanged: (value) {
+                      setState(() {
+                        _musicVolume = value;
+                        widget.game.setBackgroundMusicVolume(value);
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
@@ -84,9 +65,9 @@ class OptionsMenuState extends State<OptionsMenu> {
             ElevatedButton(
               onPressed: () {
                 widget.game.overlays.remove('OptionsMenu');
-                widget.game.resumeEngine();
+                widget.game.overlays.add("MainMenu");
               },
-              child: const Text('Close'),
+              child: const Text('Back'),
             ),
           ],
         ),

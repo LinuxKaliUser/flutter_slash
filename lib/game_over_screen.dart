@@ -4,7 +4,7 @@ import 'main.dart'; // Import your main game file
 class GameOverScreen extends StatelessWidget {
   final FlutterSlashGame game;
 
-  const GameOverScreen(this.game, {Key? key}) : super(key: key);
+  const GameOverScreen(this.game, {super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -57,14 +57,16 @@ class FlutterSlashGame extends FlameGame with HasKeyboardHandlerComponents {
 
   void restartGame() {
     overlays.remove('GameOverScreen');
-    // Reset game state here if needed
     resumeEngine();
+  }
+  void exitGame() {
+
   }
 
   void setBackgroundMusicVolume(double volume) {
     backgroundMusicVolume = volume;
-    FlameAudio.bgm.dispose();
-    FlameAudio.bgm.play("background_music.mp3",volume: volume);
+    FlameAudio.bgm.audioPlayer.setVolume(volume);
+
   }
 }
 
