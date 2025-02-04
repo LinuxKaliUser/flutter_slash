@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'main.dart'; // Import your main game file
 
 class MainMenu extends StatelessWidget {
@@ -11,6 +15,7 @@ class MainMenu extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: [
           const Text(
             'Main Menu',
@@ -32,8 +37,9 @@ class MainMenu extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              game.overlays.add('CloseMenu');
-              game.gameOver();
+              SystemNavigator.pop();
+              Navigator.pop(context);
+              exit(0);
             },
             child: const Text('Exit'),
           ),
