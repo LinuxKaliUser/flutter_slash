@@ -22,8 +22,8 @@ class FlutterSlashGame extends FlameGame
     camera.follow(player);
   }
 
-  @override
-  Color backgroundColor() => const Color(0xFFC4A484);
+  //@override
+  //Color backgroundColor() => const Color(0xFFC4A484);
 
   @override
   void onPointerMove(PointerMoveEvent event) {

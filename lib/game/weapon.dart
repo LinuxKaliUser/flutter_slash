@@ -1,7 +1,11 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 
-class Weapon extends SpriteAnimationComponent {
+import 'package:flutter_slash/game/flutterslash.dart';
+import 'package:flutter_slash/game/bullet.dart';
+
+class Weapon extends SpriteAnimationComponent
+    with HasGameReference<FlutterSlashGame> {
   final double damage;
   final double fireRate;
   final double bulletSpeed;
@@ -10,6 +14,8 @@ class Weapon extends SpriteAnimationComponent {
 
   late SpriteAnimation idleAnimation;
   late SpriteAnimation fireAnimation;
+
+  late SpawnComponent bulletSpawner;
 
   Weapon({
     required this.damage,
@@ -21,6 +27,22 @@ class Weapon extends SpriteAnimationComponent {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
+    // TODO: Change the weapon to simply have a fire function which fires the gun and plays the animation, isntead of a
+    // fireing state, also make sure that the full-auto works unlike now
+    bulletSpawner = SpawnComponent(
+        period: 1 / fireRate,
+        selfPositioning: true,
+        factory: (index) {
+          return Bullet(
+            position: position,
+            speed: bulletSpeed,
+            angle: angle,
+          );
+        },
+        autoStart: false);
+
+    game.add(bulletSpawner);
 
     await _loadAnimations();
   }
@@ -54,10 +76,14 @@ class Weapon extends SpriteAnimationComponent {
   }
 
   void playIdle() {
+    bulletSpawner.timer.stop();
+    print("Spawner stopped");
     animation = idleAnimation;
   }
 
   void playFire() {
+    bulletSpawner.timer.start();
+    print("Spawner started");
     animation = fireAnimation;
   }
 

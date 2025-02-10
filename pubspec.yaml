@@ -22,5 +22,6 @@ flutter:
   assets:
     - assets/images/pipo-nekonin.png
     - assets/images/weapons/sprites/guns/AK-47.png
+    - assets/images/weapons/sprites/ammo/ak-47/bullet.png
     - assets/images/weapons/animations/AK-47/Full-auto/Full_auto_muzzle_AK-47.png
     - assets/audio/
