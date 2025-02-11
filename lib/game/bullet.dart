@@ -4,19 +4,20 @@ import 'package:flame/components.dart';
 
 import 'package:flutter_slash/game/flutterslash.dart';
 
-class Bullet extends SpriteComponent with HasGameReference<FlutterSlashGame> {
+class Bullet extends SpriteComponent with HasGameRef<FlutterSlashGame> {
   double speed;
 
   late Vector2 direction;
 
   Bullet({super.position, required this.speed, super.angle})
-      : super(size: Vector2(16, 16), anchor: Anchor.center);
+      : super(size: Vector2(24, 24), anchor: Anchor.center);
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
     direction = Vector2(cos(angle), sin(angle)).normalized();
+    position += direction * 72;
 
     sprite = await game.loadSprite('weapons/sprites/ammo/ak-47/bullet.png');
   }

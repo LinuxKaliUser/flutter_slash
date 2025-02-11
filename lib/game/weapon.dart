@@ -5,7 +5,7 @@ import 'package:flutter_slash/game/flutterslash.dart';
 import 'package:flutter_slash/game/bullet.dart';
 
 class Weapon extends SpriteAnimationComponent
-    with HasGameReference<FlutterSlashGame> {
+    with HasGameRef<FlutterSlashGame> {
   final double damage;
   final double fireRate;
   final double bulletSpeed;
@@ -35,7 +35,7 @@ class Weapon extends SpriteAnimationComponent
         selfPositioning: true,
         factory: (index) {
           return Bullet(
-            position: position,
+            position: gameRef.size / 2,
             speed: bulletSpeed,
             angle: angle,
           );
