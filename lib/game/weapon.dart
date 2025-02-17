@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
+import 'package:flame/sprite.dart';
 
 import 'package:flutter_slash/game/flutterslash.dart';
 import 'package:flutter_slash/game/bullet.dart';
@@ -14,8 +15,7 @@ class Weapon extends SpriteAnimationComponent
 
   late SpriteAnimation idleAnimation;
   late SpriteAnimation fireAnimation;
-
-  late SpawnComponent bulletSpawner;
+  late SpriteAnimationTicker fireAnimationTicker;
 
   Weapon({
     required this.damage,
@@ -28,22 +28,6 @@ class Weapon extends SpriteAnimationComponent
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // TODO: Change the weapon to simply have a fire function which fires the gun and plays the animation, isntead of a
-    // fireing state, also make sure that the full-auto works unlike now
-    bulletSpawner = SpawnComponent(
-        period: 1 / fireRate,
-        selfPositioning: true,
-        factory: (index) {
-          return Bullet(
-            position: gameRef.size / 2,
-            speed: bulletSpeed,
-            angle: angle,
-          );
-        },
-        autoStart: false);
-
-    game.add(bulletSpawner);
-
     await _loadAnimations();
   }
 
@@ -54,6 +38,11 @@ class Weapon extends SpriteAnimationComponent
         'weapons/animations/AK-47/Full-auto/Full_auto_muzzle_AK-47.png',
         12,
         1 / (fireRate * 12));
+    fireAnimationTicker = fireAnimation.createTicker();
+    fireAnimationTicker.onComplete = () {
+      animation = idleAnimation;
+      fireAnimationTicker.reset();
+    };
 
     animation = idleAnimation;
   }
@@ -67,6 +56,7 @@ class Weapon extends SpriteAnimationComponent
     return SpriteAnimation.fromFrameData(
       spriteSheet,
       SpriteAnimationData.sequenced(
+        loop: false,
         amount: frameCount,
         textureSize: spriteSize,
         stepTime: stepTime,
@@ -75,16 +65,15 @@ class Weapon extends SpriteAnimationComponent
     );
   }
 
-  void playIdle() {
-    bulletSpawner.timer.stop();
-    print("Spawner stopped");
-    animation = idleAnimation;
-  }
-
-  void playFire() {
-    bulletSpawner.timer.start();
-    print("Spawner started");
+  void fire() {
     animation = fireAnimation;
+
+    final bullet = Bullet(
+      position: position,
+      speed: bulletSpeed,
+      angle: angle,
+    );
+    game.world.add(bullet);
   }
 
   void setFacing(bool facingRight) {
@@ -93,5 +82,12 @@ class Weapon extends SpriteAnimationComponent
 
       flipVerticallyAroundCenter();
     }
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    fireAnimationTicker.update(dt);
   }
 }
