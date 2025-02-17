@@ -10,7 +10,7 @@ class Bullet extends SpriteComponent with HasGameRef<FlutterSlashGame> {
   late Vector2 direction;
 
   Bullet({super.position, required this.speed, super.angle})
-      : super(size: Vector2(24, 24), anchor: Anchor.center);
+      : super(size: Vector2(36, 36), anchor: Anchor.center);
 
   @override
   Future<void> onLoad() async {

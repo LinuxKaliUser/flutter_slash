@@ -44,7 +44,7 @@ class PlayerCharacter extends SpriteAnimationComponent
     weapon = Weapon(
       damage: 10,
       fireRate: 10,
-      bulletSpeed: 300,
+      bulletSpeed: 600,
       size: Vector2(72, 36),
     );
 
@@ -136,9 +136,7 @@ class PlayerCharacter extends SpriteAnimationComponent
 
     if (weapon != null) {
       if (keysPressed.contains(LogicalKeyboardKey.space)) {
-        weapon!.playFire();
-      } else {
-        weapon!.playIdle();
+        weapon!.fire();
       }
     }
 
