@@ -2,11 +2,12 @@ import 'package:flame/events.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_slash/game/player.dart';
+import 'package:flutter_slash/game/enemy.dart';
 
 import 'package:flame/game.dart';
 
 class FlutterSlashGame extends FlameGame
-    with HasKeyboardHandlerComponents, PointerMoveCallbacks, DragCallbacks {
+    with HasKeyboardHandlerComponents, PointerMoveCallbacks, DragCallbacks, HasCollisionDetection {
   late PlayerCharacter player;
   late TiledComponent tiledMap;
   double backgroundMusicVolume = 0.5;
@@ -22,6 +23,17 @@ class FlutterSlashGame extends FlameGame
     world.add(tiledMap);
     world.add(player);
     FlameAudio.bgm.initialize();
+
+    List<EnemyCharacter> enemies = [];
+
+    for (int i = 0; i < 20; i++) {
+      enemies.add(EnemyCharacter(player));
+    }
+
+    for(EnemyCharacter enemy in enemies) {
+      world.add(enemy);
+      enemy.flock = enemies;
+    }
 
     camera.follow(player);
   }

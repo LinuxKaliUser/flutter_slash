@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
@@ -37,6 +38,7 @@ class PlayerCharacter extends SpriteAnimationComponent
   Future<void> onLoad() async {
     await super.onLoad();
 
+    add(RectangleHitbox());
     await _loadAnimations();
 
     position = gameRef.size / 2;
@@ -50,6 +52,13 @@ class PlayerCharacter extends SpriteAnimationComponent
 
     if (weapon != null) {
       gameRef.world.add(weapon!);
+    }
+  }
+
+  @override
+  void onRemove() {
+    if (weapon != null) {
+      weapon!.removeFromParent();
     }
   }
 
