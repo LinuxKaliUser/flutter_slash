@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   flame: ^1.23.0
   flame_audio: ^2.10.6
+  flame_tiled: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -20,7 +21,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/tiles/flutter-slash.tmx
+    - assets/tiles/flutter-slash.tsx
     - assets/images/pipo-nekonin.png
+    - assets/images/tileset.png
     - assets/images/weapons/sprites/guns/AK-47.png
     - assets/images/weapons/sprites/ammo/ak-47/bullet.png
     - assets/images/weapons/animations/AK-47/Full-auto/Full_auto_muzzle_AK-47.png
