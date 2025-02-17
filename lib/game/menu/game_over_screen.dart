@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_slash/game/flutter_slash_game.dart';
 
-// Import your main game file
-
 class GameOverScreen extends StatelessWidget {
   final FlutterSlashGame game;
 
