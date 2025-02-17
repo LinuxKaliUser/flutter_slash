@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'main.dart'; // Import your main game file
+import '../flutter_slash_game.dart';
+// Import your main game file
 
 class MainMenu extends StatelessWidget {
   final FlutterSlashGame game;
@@ -12,6 +12,8 @@ class MainMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    game.startBgm();
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -25,8 +27,8 @@ class MainMenu extends StatelessWidget {
             onPressed: () {
               game.overlays.remove('MainMenu'); // Remove the menu
               game.resumeEngine();
-            },
-            child: const Text('Start Game'),
+              },
+            child: const Text('Start'),
           ),
           ElevatedButton(
             onPressed: () {
