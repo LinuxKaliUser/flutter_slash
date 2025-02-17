@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 
-import 'package:flutter_slash/game/flutterslash.dart';
+import 'package:flutter_slash/game/flutter_slash_game.dart';
 import 'package:flutter_slash/game/bullet.dart';
 
 class Weapon extends SpriteAnimationComponent

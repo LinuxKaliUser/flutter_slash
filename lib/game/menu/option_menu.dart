@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'main.dart';
+import '../flutter_slash_game.dart';
 
 class OptionsMenu extends StatefulWidget {
   final FlutterSlashGame game;
@@ -13,14 +13,12 @@ class OptionsMenu extends StatefulWidget {
 
 class OptionsMenuState extends State<OptionsMenu> {
   double _musicVolume = 0.5; // Initial volume
-  double _sfxVolume = 0.5; // Initial volume
 
   @override
   void initState() {
     super.initState();
     // Load the current volume from the game (if you're storing it)
     _musicVolume = widget.game.backgroundMusicVolume;
-    _sfxVolume = widget.game.backgroundMusicVolume;
   }
 
   @override
