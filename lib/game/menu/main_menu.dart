@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../flutter_slash_game.dart';
-// Import your main game file
+
+import 'package:flutter_slash/game/flutter_slash_game.dart';
 
 class MainMenu extends StatelessWidget {
   final FlutterSlashGame game;

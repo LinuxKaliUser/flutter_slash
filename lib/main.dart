@@ -7,9 +7,7 @@ import 'game/menu/main_menu.dart';
 import 'game/menu/option_menu.dart';
 
 void main() {
-  //WidgetsFlutterBinding.ensureInitialized();
-  //await Flame.device.fullScreen();
-  final game = new FlutterSlashGame();
+  final game = FlutterSlashGame();
 
   runApp(
     MaterialApp(

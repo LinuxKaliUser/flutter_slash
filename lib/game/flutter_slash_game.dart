@@ -1,9 +1,9 @@
 import 'package:flame/events.dart';
-import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flame_audio/flame_audio.dart';
-
 import 'package:flutter_slash/game/player.dart';
+
+import 'package:flame/game.dart';
 
 class FlutterSlashGame extends FlameGame
     with HasKeyboardHandlerComponents, PointerMoveCallbacks, DragCallbacks {
@@ -11,7 +11,6 @@ class FlutterSlashGame extends FlameGame
   late TiledComponent tiledMap;
   double backgroundMusicVolume = 0.5;
   bool isBgmPlaying = false;
-
 
   @override
   Future<void> onLoad() async {
@@ -24,15 +23,17 @@ class FlutterSlashGame extends FlameGame
     world.add(player);
     FlameAudio.bgm.initialize();
 
-
     camera.follow(player);
   }
+
   void startBgm() {
     if (!isBgmPlaying) {
-      FlameAudio.bgm.play('background_music.mp3', volume: backgroundMusicVolume);
+      FlameAudio.bgm
+          .play('background_music.mp3', volume: backgroundMusicVolume);
       isBgmPlaying = true;
     }
   }
+
   void gameOver() {
     overlays.add('GameOverScreen');
   }
@@ -41,16 +42,13 @@ class FlutterSlashGame extends FlameGame
     overlays.remove('GameOverScreen');
     resumeEngine();
   }
-  void exitGame() {
 
-  }
+  void exitGame() {}
 
   void setBackgroundMusicVolume(double volume) {
     backgroundMusicVolume = volume;
-    //FlameAudio.audioCache..setVolume(backgroundMusicVolume);
     FlameAudio.bgm.audioPlayer.setVolume(volume);
   }
-
 
   @override
   void onPointerMove(PointerMoveEvent event) {
@@ -62,7 +60,6 @@ class FlutterSlashGame extends FlameGame
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-
 
     player.onMouseMove(event.deviceStartPosition + event.deviceDelta);
   }
