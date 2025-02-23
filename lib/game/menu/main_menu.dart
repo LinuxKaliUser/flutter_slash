@@ -24,27 +24,39 @@ class MainMenu extends StatelessWidget {
             'Main Menu',
             style: TextStyle(fontSize: 48, color: Colors.white),
           ),
-          ElevatedButton(
-            onPressed: () {
-              game.overlays.remove('MainMenu'); // Remove the menu
-              game.resumeEngine();
+          const SizedBox(height: 20), // Add spacing between the title and the first button
+          SizedBox(
+            width: 200, // Set a fixed width for the buttons
+            child: ElevatedButton(
+              onPressed: () {
+                game.overlays.remove('MainMenu'); // Remove the menu
+                game.resumeEngine();
               },
-            child: const Text('Start'),
+              child: const Text('Start'),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              game.overlays.add('OptionsMenu');
-              game.pauseEngine();
-            },
-            child: const Text('Options'),
+          const SizedBox(height: 20), // Add spacing between buttons
+          SizedBox(
+            width: 200, // Set a fixed width for the buttons
+            child: ElevatedButton(
+              onPressed: () {
+                game.overlays.add('OptionsMenu');
+                game.pauseEngine();
+              },
+              child: const Text('Options'),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              SystemNavigator.pop();
-              Navigator.pop(context);
-              exit(0);
-            },
-            child: const Text('Exit'),
+          const SizedBox(height: 20), // Add spacing between buttons
+          SizedBox(
+            width: 200, // Set a fixed width for the buttons
+            child: ElevatedButton(
+              onPressed: () {
+                SystemNavigator.pop();
+                Navigator.pop(context);
+                exit(0);
+              },
+              child: const Text('Exit'),
+            ),
           ),
         ],
       ),
