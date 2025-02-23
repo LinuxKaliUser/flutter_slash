@@ -5,12 +5,13 @@ import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
+import 'package:flutter_slash/game/enemy.dart';
 
 import 'package:flutter_slash/game/flutter_slash_game.dart';
 import 'package:flutter_slash/game/weapon.dart';
 
 class PlayerCharacter extends SpriteAnimationComponent
-    with HasGameRef<FlutterSlashGame>, KeyboardHandler {
+    with HasGameRef<FlutterSlashGame>, KeyboardHandler, CollisionCallbacks {
   static const double _spriteWidth = 32.0;
   static const double _spriteHeight = 32.0;
   static const double _animationSpeed = 0.1;
@@ -59,6 +60,15 @@ class PlayerCharacter extends SpriteAnimationComponent
   void onRemove() {
     if (weapon != null) {
       weapon!.removeFromParent();
+    }
+  }
+
+  @override
+  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollisionStart(intersectionPoints, other);
+    if (other is EnemyCharacter) {
+      removeFromParent();
+      gameRef.gameOver();
     }
   }
 

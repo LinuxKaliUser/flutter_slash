@@ -2,11 +2,10 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/collisions.dart';
-import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 
-import 'package:flutter_slash/game/flutterslash.dart';
+import 'package:flutter_slash/game/flutter_slash_game.dart';
 import 'package:flutter_slash/game/player.dart';
 import 'package:flutter_slash/game/bullet.dart';
 
@@ -55,11 +54,9 @@ class EnemyCharacter extends SpriteAnimationComponent
   }
 
   @override
-  void onCollisionStart(Set<Vector2> points, PositionComponent other) {
-    super.onCollisionStart(points, other);
-    if (other is PlayerCharacter) {
-      other.removeFromParent();
-    } else if (other is Bullet) {
+  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollisionStart(intersectionPoints, other);
+    if (other is Bullet) {
       other.removeFromParent();
       removeFromParent();
     }

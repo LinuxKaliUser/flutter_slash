@@ -7,7 +7,11 @@ import 'package:flutter_slash/game/enemy.dart';
 import 'package:flame/game.dart';
 
 class FlutterSlashGame extends FlameGame
-    with HasKeyboardHandlerComponents, PointerMoveCallbacks, DragCallbacks, HasCollisionDetection {
+    with
+        HasKeyboardHandlerComponents,
+        PointerMoveCallbacks,
+        DragCallbacks,
+        HasCollisionDetection {
   late PlayerCharacter player;
   late TiledComponent tiledMap;
   double backgroundMusicVolume = 0.5;
@@ -30,7 +34,7 @@ class FlutterSlashGame extends FlameGame
       enemies.add(EnemyCharacter(player));
     }
 
-    for(EnemyCharacter enemy in enemies) {
+    for (EnemyCharacter enemy in enemies) {
       world.add(enemy);
       enemy.flock = enemies;
     }
