@@ -22,6 +22,8 @@ class FlutterSlashGame extends FlameGame
     await super.onLoad();
 
     tiledMap = await TiledComponent.load('flutter-slash.tmx', Vector2.all(32));
+    tiledMap.position =
+        Vector2((size.x - tiledMap.size.x) / 2, (size.y - tiledMap.size.y) / 2);
     player = PlayerCharacter();
 
     world.add(tiledMap);
