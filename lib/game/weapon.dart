@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 import 'package:flutter_slash/game/flutter_slash_game.dart';
 import 'package:flutter_slash/game/bullet.dart';
@@ -10,6 +11,8 @@ class Weapon extends SpriteAnimationComponent
   final double damage;
   final double fireRate;
   final double bulletSpeed;
+
+  DateTime? lastFireTime;
 
   bool facingRight = true;
 
@@ -66,7 +69,16 @@ class Weapon extends SpriteAnimationComponent
   }
 
   void fire() {
+    final now = DateTime.now();
+
+    if (lastFireTime != null && now.difference(lastFireTime!).inMilliseconds < 1000 / fireRate) {
+      return;
+    }
+
+    lastFireTime = now;
+
     animation = fireAnimation;
+    FlameAudio.play('sfx/762x39_single.mp3', volume: 0.5);
 
     final bullet = Bullet(
       position: position,
