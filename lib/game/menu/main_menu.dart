@@ -12,6 +12,7 @@ class MainMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    game.pauseEngine();
     game.startBgm();
 
     return Center(
