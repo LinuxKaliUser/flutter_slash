@@ -64,7 +64,8 @@ class PlayerCharacter extends SpriteAnimationComponent
   }
 
   @override
-  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is EnemyCharacter) {
       removeFromParent();
@@ -160,6 +161,12 @@ class PlayerCharacter extends SpriteAnimationComponent
     }
 
     return true;
+  }
+
+  void onTapDown() {
+    if (weapon != null) {
+      weapon!.fire();
+    }
   }
 
   void onMouseMove(Vector2 mousePosition) {

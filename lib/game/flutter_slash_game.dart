@@ -11,7 +11,8 @@ class FlutterSlashGame extends FlameGame
         HasKeyboardHandlerComponents,
         PointerMoveCallbacks,
         DragCallbacks,
-        HasCollisionDetection {
+        HasCollisionDetection,
+        TapCallbacks {
   late PlayerCharacter player;
   late TiledComponent tiledMap;
   double backgroundMusicVolume = 0.5;
@@ -69,6 +70,13 @@ class FlutterSlashGame extends FlameGame
   }
 
   @override
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
+
+    player.onTapDown();
+  }
+
+  @override
   void onPointerMove(PointerMoveEvent event) {
     super.onPointerMove(event);
 
@@ -79,6 +87,7 @@ class FlutterSlashGame extends FlameGame
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
 
+    player.onTapDown();
     player.onMouseMove(event.deviceStartPosition + event.deviceDelta);
   }
 }
