@@ -1,8 +1,18 @@
-import 'package:flame/events.dart';
-import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flame_audio/flame_audio.dart';
-import 'package:flutter_slash/game/player.dart';
-import 'package:flutter_slash/game/enemy.dart';
+import 'package:flame/events.dart'
+    show
+        HasKeyboardHandlerComponents,
+        PointerMoveCallbacks,
+        PointerMoveEvent,
+        DragCallbacks,
+        DragUpdateEvent,
+        TapCallbacks,
+        TapDownEvent;
+import 'package:flame_tiled/flame_tiled.dart' show TiledComponent;
+import 'package:flame_audio/flame_audio.dart' show FlameAudio;
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
+
+import 'package:flutter_slash/game/player.dart' show PlayerCharacter;
+import 'package:flutter_slash/game/enemy.dart' show EnemyCharacter;
 
 import 'package:flame/game.dart';
 
@@ -15,12 +25,17 @@ class FlutterSlashGame extends FlameGame
         TapCallbacks {
   late PlayerCharacter player;
   late TiledComponent tiledMap;
+
+  late bool isMobile;
+
   double backgroundMusicVolume = 0.5;
   bool isBgmPlaying = false;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
+    isMobile = defaultTargetPlatform == TargetPlatform.android;
 
     tiledMap = await TiledComponent.load('flutter-slash.tmx', Vector2.all(32));
     tiledMap.position =
@@ -73,6 +88,10 @@ class FlutterSlashGame extends FlameGame
   void onTapDown(TapDownEvent event) {
     super.onTapDown(event);
 
+    if (isMobile) {
+      return;
+    }
+
     player.onTapDown();
   }
 
@@ -80,12 +99,20 @@ class FlutterSlashGame extends FlameGame
   void onPointerMove(PointerMoveEvent event) {
     super.onPointerMove(event);
 
+    if (isMobile) {
+      return;
+    }
+
     player.onMouseMove(event.devicePosition);
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
+
+    if (isMobile) {
+      return;
+    }
 
     player.onTapDown();
     player.onMouseMove(event.deviceStartPosition + event.deviceDelta);
