@@ -17,12 +17,12 @@ class GameOverScreen extends StatelessWidget {
             'Game Over',
             style: TextStyle(fontSize: 48, color: Colors.white),
           ),
-          ElevatedButton(
-            onPressed: () {
-              game.restartGame();
-            },
-            child: const Text('Restart'),
-          ),
+          //ElevatedButton(
+          //  onPressed: () {
+          //    game.restartGame();
+          //  },
+          //  child: const Text('Restart'),
+          //),
         ],
       ),
     );
