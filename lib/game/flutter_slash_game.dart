@@ -9,7 +9,7 @@ import 'package:flame/events.dart'
         TapDownEvent;
 import 'package:flame_tiled/flame_tiled.dart' show TiledComponent;
 import 'package:flame_audio/flame_audio.dart' show FlameAudio;
-import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform, isSkiaWeb, isSkwasm;
 
 import 'package:flutter_slash/game/player.dart' show PlayerCharacter;
 import 'package:flutter_slash/game/enemy.dart' show EnemyCharacter;
@@ -26,6 +26,7 @@ class FlutterSlashGame extends FlameGame
   late PlayerCharacter player;
   late TiledComponent tiledMap;
 
+  late bool isWeb;
   late bool isMobile;
 
   double backgroundMusicVolume = 0.5;
@@ -35,7 +36,8 @@ class FlutterSlashGame extends FlameGame
   Future<void> onLoad() async {
     await super.onLoad();
 
-    isMobile = defaultTargetPlatform == TargetPlatform.android;
+    isWeb = isSkiaWeb | isSkwasm;
+    isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
 
     tiledMap = await TiledComponent.load('flutter-slash.tmx', Vector2.all(32));
     tiledMap.position =
@@ -58,6 +60,12 @@ class FlutterSlashGame extends FlameGame
     }
 
     camera.follow(player);
+
+    pauseEngine();
+  }
+
+  void startGame() {
+    resumeEngine();
   }
 
   void startBgm() {
