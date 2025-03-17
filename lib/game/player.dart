@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flame/camera.dart';
 import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
@@ -59,24 +60,24 @@ class PlayerCharacter extends SpriteAnimationComponent
     if (weapon != null) {
       gameRef.world.add(weapon!);
     }
-
+    gameRef.camera.viewport = FixedResolutionViewport(resolution: Vector2(1280, 720));
     if (gameRef.isMobile) {
       // Initialize and add the joystick component
       movementJoystick = JoystickComponent(
           knob:
               CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
           background: CircleComponent(
-              radius: 60,
+              radius: 90,
               paint: Paint()..color = Colors.grey.withValues(alpha: 0.5)),
-          margin: const EdgeInsets.only(left: 40, bottom: 40),
+          margin: const EdgeInsets.only(left: 50, bottom: 50),
           priority: 10);
       fireJoystick = JoystickComponent(
           knob:
               CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
           background: CircleComponent(
-              radius: 60,
+              radius: 90,
               paint: Paint()..color = Colors.grey.withValues(alpha: 0.5)),
-          margin: const EdgeInsets.only(right: 40, bottom: 40),
+          margin: const EdgeInsets.only(right: 50, bottom: 50),
           priority: 10);
 
       gameRef.camera.viewport.add(movementJoystick);
