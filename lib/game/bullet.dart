@@ -31,10 +31,10 @@ class Bullet extends SpriteComponent with HasGameRef<FlutterSlashGame> {
 
     position += direction * speed * dt;
 
-    if (position.x < gameRef.player.position.x - gameRef.size.x / 2
-        || position.x > gameRef.player.position.x + gameRef.size.x / 2
-        || position.y < gameRef.player.position.y - gameRef.size.y / 2
-        || position.y > gameRef.player.position.y + gameRef.size.y / 2
+    if (position.x < gameRef.gameState.player.position.x - gameRef.size.x / 2
+        || position.x > gameRef.gameState.player.position.x + gameRef.size.x / 2
+        || position.y < gameRef.gameState.player.position.y - gameRef.size.y / 2
+        || position.y > gameRef.gameState.player.position.y + gameRef.size.y / 2
     ) {
       removeFromParent();
     }

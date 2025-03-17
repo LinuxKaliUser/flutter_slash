@@ -12,8 +12,6 @@ class MainMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    game.startBgm();
-
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
