@@ -36,9 +36,9 @@ class Weapon extends SpriteAnimationComponent
 
   Future<void> _loadAnimations() async {
     idleAnimation =
-        await _loadAnimation('weapons/sprites/guns/AK-47.png', 1, 0.1);
+        await _loadAnimation('weapons/sprites/guns/ak-47.png', 1, 0.1);
     fireAnimation = await _loadAnimation(
-        'weapons/animations/AK-47/Full-auto/Full_auto_muzzle_AK-47.png',
+        'weapons/animations/ak-47/full-auto.png',
         12,
         1 / (fireRate * 12));
     fireAnimationTicker = fireAnimation.createTicker();

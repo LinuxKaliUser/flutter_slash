@@ -64,15 +64,15 @@ class EnemyCharacter extends SpriteAnimationComponent
 
   Future<void> _loadAnimations() async {
 
-    downAnimation = await _loadAnimation(await Flame.images.load('Chicken/ChickenWalk.png'), 4, Vector2(0, 0));
+    downAnimation = await _loadAnimation(await Flame.images.load('chicken/chickenwalk.png'), 4, Vector2(0, 0));
     leftAnimation =
-    await _loadAnimation(await Flame.images.load('Chicken/ChickenSideWalkLeft.png'), 4, Vector2(0, 0));
+    await _loadAnimation(await Flame.images.load('chicken/chickensidewalkleft.png'), 4, Vector2(0, 0));
     rightAnimation =
-    await _loadAnimation(await Flame.images.load('Chicken/ChickenSideWalkRight.png'), 4, Vector2(0, 0));
+    await _loadAnimation(await Flame.images.load('chicken/chickensidewalkright.png'), 4, Vector2(0, 0));
     upAnimation =
-    await _loadAnimation(await Flame.images.load('Chicken/ChickenWalkBack.png'), 4, Vector2(0, 0));
+    await _loadAnimation(await Flame.images.load('chicken/chickenwalkback.png'), 4, Vector2(0, 0));
     idleAnimation =
-    await _loadAnimation(await Flame.images.load('Chicken/ChickenIdle.png'), 1, Vector2(0, 0));
+    await _loadAnimation(await Flame.images.load('chicken/chickenidle.png'), 1, Vector2(0, 0));
 
     animation = idleAnimation;
   }

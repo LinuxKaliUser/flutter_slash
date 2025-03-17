@@ -102,7 +102,7 @@ class PlayerCharacter extends SpriteAnimationComponent
   }
 
   Future<void> _loadAnimations() async {
-    final spriteSheet = await Flame.images.load('pipo-nekonin.png');
+    final spriteSheet = await Flame.images.load('player/pipo-nekonin.png');
 
     downAnimation = await _loadAnimation(spriteSheet, 3, Vector2(0, 0));
     leftAnimation =
