@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flame/camera.dart';
 import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
@@ -153,20 +154,20 @@ class PlayerCharacter extends SpriteAnimationComponent
     movementJoystick = JoystickComponent(
       knob: CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
       background: CircleComponent(
-        radius: 60,
+        radius: 90,
         paint: Paint()..color = Colors.grey.withOpacity(0.5),
       ),
-      margin: const EdgeInsets.only(left: 40, bottom: 40),
+      margin: const EdgeInsets.only(left: 50, bottom: 50),
       priority: 10,
     );
 
     fireJoystick = JoystickComponent(
       knob: CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
       background: CircleComponent(
-        radius: 60,
+        radius: 90,
         paint: Paint()..color = Colors.grey.withOpacity(0.5),
       ),
-      margin: const EdgeInsets.only(right: 40, bottom: 40),
+      margin: const EdgeInsets.only(right: 50, bottom: 50),
       priority: 10,
     );
 
