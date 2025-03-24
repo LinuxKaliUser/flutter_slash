@@ -6,19 +6,30 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_slash/game/flutter_slash_game.dart';
 import 'package:flutter_slash/game/bullet.dart';
 
-class Weapon extends SpriteAnimationComponent
-    with HasGameRef<FlutterSlashGame> {
+
+class Weapon extends SpriteAnimationComponent with HasGameRef<FlutterSlashGame> {
+  static final Weapon ak47 = Weapon(
+    damage: 10,
+    fireRate: 10,
+    bulletSpeed: 600,
+    size: Vector2(72, 36),
+  );
+
   final double damage;
   final double fireRate;
   final double bulletSpeed;
 
   DateTime? lastFireTime;
-
   bool facingRight = true;
 
   late SpriteAnimation idleAnimation;
   late SpriteAnimation fireAnimation;
   late SpriteAnimationTicker fireAnimationTicker;
+
+  // Constants for file paths
+  static const String _idleSpritePath = 'weapons/sprites/guns/ak-47.png';
+  static const String _fireAnimationPath = 'weapons/animations/ak-47/full-auto.png';
+  static const String _fireSoundPath = 'sfx/762x39_single.mp3';
 
   Weapon({
     required this.damage,
@@ -30,17 +41,13 @@ class Weapon extends SpriteAnimationComponent
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
-    await _loadAnimations();
+    await _initializeAnimations();
   }
 
-  Future<void> _loadAnimations() async {
-    idleAnimation =
-        await _loadAnimation('weapons/sprites/guns/AK-47.png', 1, 0.1);
-    fireAnimation = await _loadAnimation(
-        'weapons/animations/AK-47/Full-auto/Full_auto_muzzle_AK-47.png',
-        12,
-        1 / (fireRate * 12));
+  Future<void> _initializeAnimations() async {
+    idleAnimation = await _createAnimation(_idleSpritePath, 1, 0.1);
+    fireAnimation = await _createAnimation(_fireAnimationPath, 12, 1 / (fireRate * 12));
+
     fireAnimationTicker = fireAnimation.createTicker();
     fireAnimationTicker.onComplete = () {
       animation = idleAnimation;
@@ -50,11 +57,9 @@ class Weapon extends SpriteAnimationComponent
     animation = idleAnimation;
   }
 
-  Future<SpriteAnimation> _loadAnimation(
-      String path, int frameCount, double stepTime) async {
+  Future<SpriteAnimation> _createAnimation(String path, int frameCount, double stepTime) async {
     final spriteSheet = await Flame.images.load(path);
-    final spriteSize =
-        Vector2(spriteSheet.width / frameCount, spriteSheet.height.toDouble());
+    final spriteSize = Vector2(spriteSheet.width / frameCount, spriteSheet.height.toDouble());
 
     return SpriteAnimation.fromFrameData(
       spriteSheet,
@@ -63,7 +68,7 @@ class Weapon extends SpriteAnimationComponent
         amount: frameCount,
         textureSize: spriteSize,
         stepTime: stepTime,
-        texturePosition: Vector2(0, 0),
+        texturePosition: Vector2.zero(),
       ),
     );
   }
@@ -78,7 +83,7 @@ class Weapon extends SpriteAnimationComponent
     lastFireTime = now;
 
     animation = fireAnimation;
-    FlameAudio.play('sfx/762x39_single.mp3', volume: 0.5);
+    FlameAudio.play(_fireSoundPath, volume: 0.5);
 
     final bullet = Bullet(
       position: position,
@@ -91,7 +96,6 @@ class Weapon extends SpriteAnimationComponent
   void setFacing(bool facingRight) {
     if (this.facingRight != facingRight) {
       this.facingRight = facingRight;
-
       flipVerticallyAroundCenter();
     }
   }
@@ -99,7 +103,6 @@ class Weapon extends SpriteAnimationComponent
   @override
   void update(double dt) {
     super.update(dt);
-
     fireAnimationTicker.update(dt);
   }
 }

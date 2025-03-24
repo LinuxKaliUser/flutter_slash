@@ -2,33 +2,20 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import 'game/flutter_slash_game.dart';
-import 'game/menu/game_over_screen.dart';
-import 'game/menu/main_menu.dart';
-import 'game/menu/option_menu.dart';
+import 'menu/game_over_screen.dart';
+import 'menu/main_menu.dart';
+import 'menu/option_menu.dart';
 
 void main() {
-  final game = FlutterSlashGame();
-
   runApp(
-    MaterialApp(
-      home: Scaffold(
-        body: Stack(
-          children: [
-            GameWidget(
-              game: game,
-              overlayBuilderMap: {
-                'MainMenu': (context, game) =>
-                    MainMenu(game as FlutterSlashGame),
-                'GameOverScreen': (context, game) =>
-                    GameOverScreen(game as FlutterSlashGame),
-                'OptionsMenu': (context, game) =>
-                    OptionsMenu(game as FlutterSlashGame),
-              },
-              initialActiveOverlays: ['MainMenu'], // Show menu first
-            ),
-          ],
-        ),
-      ),
+    GameWidget<FlutterSlashGame>.controlled(
+      gameFactory: FlutterSlashGame.new,
+      overlayBuilderMap: {
+        'MainMenu': (_, game) => MainMenu(game: game),
+        'OptionsMenu': (_, game) => OptionsMenu(game: game),
+        'GameOverScreen': (_, game) => GameOverScreen(game: game),
+      },
+      initialActiveOverlays: const ['MainMenu'], // Show menu first
     ),
   );
 }

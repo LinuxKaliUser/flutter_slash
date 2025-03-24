@@ -6,21 +6,28 @@ import 'package:flame/components.dart';
 import 'package:flutter_slash/game/flutter_slash_game.dart';
 
 class Bullet extends SpriteComponent with HasGameRef<FlutterSlashGame> {
-  double speed;
+  final double speed;
+  final Vector2 direction;
 
-  late Vector2 direction;
   late RectangleHitbox hitbox;
 
-  Bullet({super.position, required this.speed, super.angle})
-      : super(size: Vector2(36, 36), anchor: Anchor.center);
+  Bullet(
+      {required Vector2 position, required this.speed, required double angle})
+      : direction = Vector2(cos(angle), sin(angle)).normalized(),
+        super(
+            position: position,
+            size: Vector2(36, 36),
+            anchor: Anchor.center,
+            angle: angle);
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    direction = Vector2(cos(angle), sin(angle)).normalized();
+
     position += direction * 50;
 
     sprite = await game.loadSprite('weapons/sprites/ammo/ak-47/bullet.png');
+
     hitbox = RectangleHitbox(collisionType: CollisionType.passive);
     add(hitbox);
   }
@@ -28,14 +35,22 @@ class Bullet extends SpriteComponent with HasGameRef<FlutterSlashGame> {
   @override
   void update(double dt) {
     super.update(dt);
+    _move(dt);
+    _checkBounds();
+  }
 
+  void _move(double dt) {
     position += direction * speed * dt;
+  }
 
-    if (position.x < gameRef.player.position.x - gameRef.size.x / 2
-        || position.x > gameRef.player.position.x + gameRef.size.x / 2
-        || position.y < gameRef.player.position.y - gameRef.size.y / 2
-        || position.y > gameRef.player.position.y + gameRef.size.y / 2
-    ) {
+  void _checkBounds() {
+    final playerPosition = gameRef.gameState.player.position;
+    final halfScreenSize = gameRef.size / 2;
+
+    if (position.x < playerPosition.x - halfScreenSize.x / 2 ||
+        position.x > playerPosition.x + halfScreenSize.x / 2 ||
+        position.y < playerPosition.y - halfScreenSize.y / 2 ||
+        position.y > playerPosition.y + halfScreenSize.y / 2) {
       removeFromParent();
     }
   }
