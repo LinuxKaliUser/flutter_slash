@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -15,46 +14,74 @@ class EnemyCharacter extends SpriteAnimationComponent
   static const double _spriteHeight = 16.0;
   static const double _animationSpeed = 0.1;
   static const double _scalingFactor = 3;
-  static const double _minSeparation = 300.0; // Minimum allowed distance
-  static const double _separationWeight = 20; // Stronger repulsion
+  static const double _minSeparation = 300.0;
+  static const double _separationWeight = 20;
   static const double _alignmentWeight = 0.5;
   static const double _cohesionWeight = 0.125;
-  static const double _targetWeight = 5;
+  static const double _targetWeight = 25;
+  static const double speed = 180;
 
-  static const double speed = 60;
-
-  Vector2 velocity = Vector2.zero();
-  PlayerCharacter player;
+  final PlayerCharacter player;
   late List<EnemyCharacter> flock;
+  Vector2 velocity = Vector2.zero();
 
-  late final SpriteAnimation downAnimation;
-  late final SpriteAnimation leftAnimation;
-  late final SpriteAnimation rightAnimation;
-  late final SpriteAnimation upAnimation;
-  late final SpriteAnimation idleAnimation;
+  late final Map<String, SpriteAnimation> animations;
 
   EnemyCharacter(this.player)
       : super(
-      size: Vector2(_spriteWidth, _spriteHeight) * _scalingFactor,
-      priority: 2,
-      anchor: Anchor.center);
+          size: Vector2(_spriteWidth, _spriteHeight) * _scalingFactor,
+          priority: 2,
+          anchor: Anchor.center,
+        );
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
     add(RectangleHitbox());
     await _loadAnimations();
+    _initializePosition();
+  }
 
-    final Random random = Random();
+  Future<void> _loadAnimations() async {
+    animations = {
+      'down': await _createAnimation('chicken/chickenwalk.png', 4),
+      'left': await _createAnimation('chicken/chickensidewalkleft.png', 4),
+      'right': await _createAnimation('chicken/chickensidewalkright.png', 4),
+      'up': await _createAnimation('chicken/chickenwalkback.png', 4),
+      'idle': await _createAnimation('chicken/chickenidle.png', 1),
+    };
+    animation = animations['idle'];
+  }
+
+  Future<SpriteAnimation> _createAnimation(
+      String path, int frameCount) async {
+    final spriteSheet = await Flame.images.load(path);
+    return SpriteAnimation.fromFrameData(
+      spriteSheet,
+      SpriteAnimationData.sequenced(
+        amount: frameCount,
+        textureSize: Vector2(_spriteWidth, _spriteHeight),
+        stepTime: _animationSpeed,
+      ),
+    );
+  }
+
+  void _initializePosition() {
+    final random = Random();
     do {
       position.x = random.nextDouble() * gameRef.size.x;
       position.y = random.nextDouble() * gameRef.size.y;
-    } while ((!(position.x > gameRef.size.x * 0.75 || position.x < gameRef.size.x * 0.25 || position.y > gameRef.size.y * 0.75 || position.y < gameRef.size.y * 0.25)));
+    } while (_isPositionTooCloseToCenter());
+  }
+
+  bool _isPositionTooCloseToCenter() {
+    final center = gameRef.size / 2;
+    return (position - center).length < _minSeparation;
   }
 
   @override
-  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is Bullet) {
       other.removeFromParent();
@@ -62,54 +89,30 @@ class EnemyCharacter extends SpriteAnimationComponent
     }
   }
 
-  Future<void> _loadAnimations() async {
-
-    downAnimation = await _loadAnimation(await Flame.images.load('Chicken/ChickenWalk.png'), 4, Vector2(0, 0));
-    leftAnimation =
-    await _loadAnimation(await Flame.images.load('Chicken/ChickenSideWalkLeft.png'), 4, Vector2(0, 0));
-    rightAnimation =
-    await _loadAnimation(await Flame.images.load('Chicken/ChickenSideWalkRight.png'), 4, Vector2(0, 0));
-    upAnimation =
-    await _loadAnimation(await Flame.images.load('Chicken/ChickenWalkBack.png'), 4, Vector2(0, 0));
-    idleAnimation =
-    await _loadAnimation(await Flame.images.load('Chicken/ChickenIdle.png'), 1, Vector2(0, 0));
-
-    animation = idleAnimation;
-  }
-
-  Future<SpriteAnimation> _loadAnimation(
-      Image spriteSheet, int frameCount, Vector2 texturePosition) async {
-    return SpriteAnimation.fromFrameData(
-      spriteSheet,
-      SpriteAnimationData.sequenced(
-        amount: frameCount,
-        textureSize: Vector2(_spriteWidth, _spriteHeight),
-        stepTime: _animationSpeed,
-        texturePosition: texturePosition,
-      ),
-    );
-  }
-
   @override
   void update(double dt) {
     super.update(dt);
+    _applyFlockingBehavior();
+    _moveTowardsPlayer();
+    _updatePosition(dt);
+    _updateAnimation();
+  }
+
+  void _applyFlockingBehavior() {
     Vector2 separation = Vector2.zero();
     Vector2 alignment = Vector2.zero();
     Vector2 cohesion = Vector2.zero();
-    double total = 0;
+    int total = 0;
 
     for (var other in flock) {
       if (other == this) continue;
 
-      double distance = position.distanceTo(other.position);
-
+      final distance = position.distanceTo(other.position);
       if (distance > 0) {
-        // ✅ STRONG separation force to prevent overlap
         if (distance < _minSeparation) {
-          Vector2 repel = (position - other.position).normalized();
-          separation += repel * (_minSeparation / distance);  // Stronger push
+          separation += (position - other.position).normalized() *
+              (_minSeparation / distance);
         }
-
         alignment += other.velocity;
         cohesion += other.position;
         total++;
@@ -117,38 +120,40 @@ class EnemyCharacter extends SpriteAnimationComponent
     }
 
     if (total > 0) {
-      separation /= total;
-      alignment /= total;
-      cohesion /= total;
-
-      cohesion -= position;
+      separation /= total.toDouble();
+      alignment /= total.toDouble();
+      cohesion = (cohesion / total.toDouble()) - position;
 
       velocity += (separation * _separationWeight) +
           (alignment * _alignmentWeight) +
           (cohesion * _cohesionWeight);
     }
+  }
 
-    // ✅ Move toward target
-    Vector2 targetForce = (player.position - position).normalized() * _targetWeight;
+  void _moveTowardsPlayer() {
+    final targetForce =
+        (player.position - position).normalized() * _targetWeight;
     velocity += targetForce;
-
     velocity.clampLength(0, speed);
+  }
+
+  void _updatePosition(double dt) {
     position += velocity * dt;
+  }
 
-    position.add(velocity * dt);
-
-    if (velocity.x >= 5 || velocity.x <= -5 || velocity.y >= 5 ||velocity.y <= -5) {
+  void _updateAnimation() {
+    if (velocity.length > 5) {
       if (velocity.y < -0.7 * speed) {
-        animation = upAnimation;
+        animation = animations['up'];
       } else if (velocity.y > 0.7 * speed) {
-        animation = downAnimation;
+        animation = animations['down'];
       } else if (velocity.x < -0.7 * speed) {
-        animation = leftAnimation;
+        animation = animations['left'];
       } else if (velocity.x > 0.7 * speed) {
-        animation = rightAnimation;
+        animation = animations['right'];
       }
     } else {
-      animation = idleAnimation;
+      animation = animations['idle'];
     }
   }
 }

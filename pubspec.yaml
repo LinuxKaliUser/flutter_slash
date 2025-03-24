@@ -1,6 +1,6 @@
 name: flutter_slash
 description: "Flutter Slash is a 2D hack and slash game."
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
@@ -12,6 +12,7 @@ dependencies:
   flame: ^1.23.0
   flame_audio: ^2.10.6
   flame_tiled: ^2.0.1
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:
@@ -21,13 +22,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/tiles/flutter-slash.tmx
-    - assets/tiles/flutter-slash.tsx
-    - assets/images/pipo-nekonin.png
-    - assets/images/tileset.png
-    - assets/images/weapons/sprites/guns/AK-47.png
-    - assets/images/weapons/sprites/ammo/ak-47/bullet.png
-    - assets/images/weapons/animations/AK-47/Full-auto/Full_auto_muzzle_AK-47.png
+    - assets/tiles/
+    - assets/images/player/
+    - assets/images/chicken/
+    - assets/images/weapons/sprites/guns/
+    - assets/images/weapons/sprites/ammo/ak-47/
+    - assets/images/weapons/animations/ak-47/
     - assets/audio/
-    - assets/audio/sfx/762x39_single.mp3
-    - assets/images/Chicken/
+    - assets/audio/sfx/
