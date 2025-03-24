@@ -22,7 +22,9 @@ class PlayerCharacter extends SpriteAnimationComponent
 
   // Fields
   Vector2 velocity = Vector2.zero();
+
   Weapon? weapon;
+  bool firing = false;
 
   late final SpriteAnimation downAnimation;
   late final SpriteAnimation leftAnimation;
@@ -81,6 +83,9 @@ class PlayerCharacter extends SpriteAnimationComponent
     position.add(velocity * dt);
     _updateAnimation();
     weapon?.position = position;
+    if (firing) {
+      weapon?.fire();
+    }
   }
 
   @override
@@ -92,7 +97,15 @@ class PlayerCharacter extends SpriteAnimationComponent
   }
 
   void onTapDown() {
-    weapon?.fire();
+    if (gameRef.isMobile) return;
+
+    firing = true;
+  }
+
+  void onTapUp() {
+    if (gameRef.isMobile) return;
+
+    firing = false;
   }
 
   void onMouseMove(Vector2 mousePosition) {
@@ -135,12 +148,7 @@ class PlayerCharacter extends SpriteAnimationComponent
   }
 
   void _initializeWeapon() {
-    weapon = Weapon(
-      damage: 10,
-      fireRate: 10,
-      bulletSpeed: 600,
-      size: Vector2(72, 36),
-    );
+    weapon = Weapon.ak47;
 
     if (weapon != null) {
       gameRef.world.add(weapon!);

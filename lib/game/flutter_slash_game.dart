@@ -62,6 +62,13 @@ class FlutterSlashGame extends FlameGame
   }
 
   @override
+  void onTapUp(TapUpEvent event) {
+    super.onTapUp(event);
+
+    gameState.player.onTapUp();
+  }
+
+  @override
   void onPointerMove(PointerMoveEvent event) {
     super.onPointerMove(event);
 
