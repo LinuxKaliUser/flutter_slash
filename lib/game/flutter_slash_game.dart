@@ -3,6 +3,7 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_slash/game/game_state.dart';
+import 'package:flutter_slash/game/score_text.dart';
 
 import 'package:flutter_slash/manager/options_manager.dart';
 
@@ -29,9 +30,7 @@ class FlutterSlashGame extends FlameGame
     gameState = GameState();
     await gameState.initialize(this);
 
-    FlameAudio.bgm.initialize();
-    FlameAudio.bgm.play('background_music.mp3',
-        volume: await OptionsManager.loadVolume());
+    // 🎮 Score-Anzeige hinzufügen
     OptionsManager.onVolumeChange.listen((volume) {
       FlameAudio.bgm.audioPlayer.setVolume(volume);
     });
@@ -89,4 +88,7 @@ class FlutterSlashGame extends FlameGame
     gameState.player.onTapDown();
     gameState.player.onMouseMove(event.deviceStartPosition + event.deviceDelta);
   }
+
 }
+
+

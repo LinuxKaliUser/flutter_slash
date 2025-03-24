@@ -22,6 +22,8 @@ class GameOverScreen extends StatelessWidget {
           _buildMenuButton('Main Menu', () {
             game.overlays.remove('GameOverScreen');
             game.overlays.add('MainMenu');
+            game.restartGame();
+            game.pauseEngine();
           }),
           const SizedBox(height: 20),
           _buildMenuButton('Restart', () {

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async' as time;
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -23,6 +24,7 @@ class EnemyCharacter extends SpriteAnimationComponent
 
   final PlayerCharacter player;
   late List<EnemyCharacter> flock;
+
   Vector2 velocity = Vector2.zero();
 
   late final Map<String, SpriteAnimation> animations;
@@ -86,6 +88,7 @@ class EnemyCharacter extends SpriteAnimationComponent
     if (other is Bullet) {
       other.removeFromParent();
       removeFromParent();
+      gameRef.gameState.score++;
     }
   }
 
@@ -156,4 +159,7 @@ class EnemyCharacter extends SpriteAnimationComponent
       animation = animations['idle'];
     }
   }
+
+
+
 }
