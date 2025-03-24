@@ -26,11 +26,7 @@ class PlayerCharacter extends SpriteAnimationComponent
   Weapon? weapon;
   bool firing = false;
 
-  late final SpriteAnimation downAnimation;
-  late final SpriteAnimation leftAnimation;
-  late final SpriteAnimation rightAnimation;
-  late final SpriteAnimation upAnimation;
-  late final SpriteAnimation idleAnimation;
+  late final Map<String, SpriteAnimation> animations;
 
   late JoystickComponent movementJoystick;
   late JoystickComponent fireJoystick;
@@ -121,17 +117,15 @@ class PlayerCharacter extends SpriteAnimationComponent
   Future<void> _loadAnimations() async {
     final spriteSheet = await Flame.images.load('player/pipo-nekonin.png');
 
-    downAnimation = await _loadAnimation(spriteSheet, 3, Vector2(0, 0));
-    leftAnimation =
-        await _loadAnimation(spriteSheet, 3, Vector2(0, _spriteHeight * 1));
-    rightAnimation =
-        await _loadAnimation(spriteSheet, 3, Vector2(0, _spriteHeight * 2));
-    upAnimation =
-        await _loadAnimation(spriteSheet, 3, Vector2(0, _spriteHeight * 3));
-    idleAnimation =
-        await _loadAnimation(spriteSheet, 1, Vector2(_spriteWidth, 0));
+    animations = {
+      'down': await _loadAnimation(spriteSheet, 3, Vector2(0, 0)),
+      'left': await _loadAnimation(spriteSheet, 3, Vector2(0, _spriteHeight * 1)),
+      'right': await _loadAnimation(spriteSheet, 3, Vector2(0, _spriteHeight * 2)),
+      'up': await _loadAnimation(spriteSheet, 3, Vector2(0, _spriteHeight * 3)),
+      'idle': await _loadAnimation(spriteSheet, 1, Vector2(_spriteWidth, 0))
+    };
 
-    animation = idleAnimation;
+    animation = animations['idle'];
   }
 
   Future<SpriteAnimation> _loadAnimation(
@@ -216,26 +210,26 @@ class PlayerCharacter extends SpriteAnimationComponent
         case 'north':
           priority = 2;
           weapon?.priority = 1;
-          animation = upAnimation;
+          animation = animations['up'];
           break;
         case 'south':
           priority = 1;
           weapon?.priority = 2;
-          animation = downAnimation;
+          animation = animations['down'];
           break;
         case 'west':
           priority = 2;
           weapon?.priority = 1;
-          animation = leftAnimation;
+          animation = animations['left'];
           break;
         case 'east':
           priority = 1;
           weapon?.priority = 2;
-          animation = rightAnimation;
+          animation = animations['right'];
           break;
       }
     } else {
-      animation = idleAnimation;
+      animation = animations['idle'];
     }
   }
 
