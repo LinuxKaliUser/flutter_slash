@@ -5,7 +5,6 @@ import 'package:flame/collisions.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/components.dart' show JoystickComponent, CircleComponent;
 import 'package:flutter/material.dart' show Paint, Colors, EdgeInsets;
 
 import 'package:flutter_slash/game/flutter_slash_game.dart';
@@ -14,15 +13,15 @@ import 'package:flutter_slash/game/enemy.dart';
 
 class PlayerCharacter extends SpriteAnimationComponent
     with HasGameRef<FlutterSlashGame>, KeyboardHandler, CollisionCallbacks {
+  // Constants
   static const double _spriteWidth = 32.0;
   static const double _spriteHeight = 32.0;
   static const double _animationSpeed = 0.1;
   static const double _scalingFactor = 2.4;
+  static const double _speed = 200;
 
-  static const double speed = 200;
-
+  // Fields
   Vector2 velocity = Vector2.zero();
-
   Weapon? weapon;
 
   late final SpriteAnimation downAnimation;
@@ -36,9 +35,10 @@ class PlayerCharacter extends SpriteAnimationComponent
 
   PlayerCharacter()
       : super(
-            size: Vector2(_spriteWidth, _spriteHeight) * _scalingFactor,
-            priority: 1,
-            anchor: Anchor.center);
+          size: Vector2(_spriteWidth, _spriteHeight) * _scalingFactor,
+          priority: 1,
+          anchor: Anchor.center,
+        );
 
   @override
   Future<void> onLoad() async {
@@ -49,46 +49,15 @@ class PlayerCharacter extends SpriteAnimationComponent
 
     position = gameRef.size / 2;
 
-    weapon = Weapon(
-      damage: 10,
-      fireRate: 10,
-      bulletSpeed: 600,
-      size: Vector2(72, 36),
-    );
-
-    if (weapon != null) {
-      gameRef.world.add(weapon!);
-    }
-
+    _initializeWeapon();
     if (gameRef.isMobile) {
-      // Initialize and add the joystick component
-      movementJoystick = JoystickComponent(
-          knob:
-              CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
-          background: CircleComponent(
-              radius: 60,
-              paint: Paint()..color = Colors.grey.withValues(alpha: 0.5)),
-          margin: const EdgeInsets.only(left: 40, bottom: 40),
-          priority: 10);
-      fireJoystick = JoystickComponent(
-          knob:
-              CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
-          background: CircleComponent(
-              radius: 60,
-              paint: Paint()..color = Colors.grey.withValues(alpha: 0.5)),
-          margin: const EdgeInsets.only(right: 40, bottom: 40),
-          priority: 10);
-
-      gameRef.camera.viewport.add(movementJoystick);
-      gameRef.camera.viewport.add(fireJoystick);
+      _initializeJoysticks();
     }
   }
 
   @override
   void onRemove() {
-    if (weapon != null) {
-      weapon!.removeFromParent();
-    }
+    weapon?.removeFromParent();
   }
 
   @override
@@ -99,6 +68,41 @@ class PlayerCharacter extends SpriteAnimationComponent
       removeFromParent();
       gameRef.gameOver();
     }
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    if (gameRef.isMobile) {
+      _handleJoystickInput();
+    }
+
+    position.add(velocity * dt);
+    _updateAnimation();
+    weapon?.position = position;
+  }
+
+  @override
+  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    if (gameRef.isMobile) return false;
+
+    _handleKeyboardInput(keysPressed);
+    return true;
+  }
+
+  void onTapDown() {
+    weapon?.fire();
+  }
+
+  void onMouseMove(Vector2 mousePosition) {
+    if (gameRef.isMobile) return;
+
+    final direction = (mousePosition - gameRef.size / 2);
+    final angle = atan2(direction.y, direction.x);
+
+    weapon?.angle = angle;
+    weapon?.setFacing(angle.abs() < pi / 2);
   }
 
   Future<void> _loadAnimations() async {
@@ -130,118 +134,107 @@ class PlayerCharacter extends SpriteAnimationComponent
     );
   }
 
-  @override
-  void update(double dt) {
-    super.update(dt);
-
-    // Joytick movement
-    if (gameRef.isMobile) {
-      velocity = movementJoystick.relativeDelta.normalized() * speed;
-      if (weapon != null && fireJoystick.relativeDelta != Vector2.zero()) {
-        final angle =
-            atan2(fireJoystick.relativeDelta.y, fireJoystick.relativeDelta.x);
-
-        weapon!.angle = angle;
-        weapon!.setFacing(angle.abs() < pi / 2);
-
-        weapon!.fire();
-      }
-    }
-
-    // Keyboard movement
-    position.add(velocity * dt);
-
-    if (velocity != Vector2.zero()) {
-      String facing = determineDirection(velocity);
-
-      if (facing == 'north') {
-        priority = 2;
-        weapon?.priority = 1;
-        animation = upAnimation;
-      } else if (facing == 'south') {
-        priority = 1;
-        weapon?.priority = 2;
-        animation = downAnimation;
-      } else if (facing == 'west') {
-        priority = 2;
-        weapon?.priority = 1;
-        animation = leftAnimation;
-      } else if (facing == 'east') {
-        priority = 1;
-        weapon?.priority = 2;
-        animation = rightAnimation;
-      }
-    } else {
-      animation = idleAnimation;
-    }
+  void _initializeWeapon() {
+    weapon = Weapon(
+      damage: 10,
+      fireRate: 10,
+      bulletSpeed: 600,
+      size: Vector2(72, 36),
+    );
 
     if (weapon != null) {
-      weapon!.position = position;
+      gameRef.world.add(weapon!);
     }
   }
 
-  String determineDirection(Vector2 direction) {
-    if (direction.x.abs() > direction.y.abs()) {
-      // East or West
-      return direction.x > 0 ? 'east' : 'west';
-    } else if (direction.y.abs() > direction.x.abs()) {
-      // North or South
-      return direction.y > 0 ? 'south' : 'north';
-    } else {
-      // Tie case, prefer south or north
-      return direction.y >= 0 ? 'south' : 'north';
-    }
+  void _initializeJoysticks() {
+    movementJoystick = JoystickComponent(
+      knob: CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
+      background: CircleComponent(
+        radius: 60,
+        paint: Paint()..color = Colors.grey.withOpacity(0.5),
+      ),
+      margin: const EdgeInsets.only(left: 40, bottom: 40),
+      priority: 10,
+    );
+
+    fireJoystick = JoystickComponent(
+      knob: CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
+      background: CircleComponent(
+        radius: 60,
+        paint: Paint()..color = Colors.grey.withOpacity(0.5),
+      ),
+      margin: const EdgeInsets.only(right: 40, bottom: 40),
+      priority: 10,
+    );
+
+    gameRef.camera.viewport.add(movementJoystick);
+    gameRef.camera.viewport.add(fireJoystick);
   }
 
-  @override
-  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    if (gameRef.isMobile) {
-      return false;
-    }
+  void _handleJoystickInput() {
+    velocity = movementJoystick.relativeDelta.normalized() * _speed;
 
-    velocity = Vector2.zero();
+    if (weapon != null && fireJoystick.relativeDelta != Vector2.zero()) {
+      final angle =
+          atan2(fireJoystick.relativeDelta.y, fireJoystick.relativeDelta.x);
 
-    if (keysPressed.contains(LogicalKeyboardKey.keyW)) {
-      velocity.y -= 1;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.keyS)) {
-      velocity.y += 1;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.keyA)) {
-      velocity.x -= 1;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.keyD)) {
-      velocity.x += 1;
-    }
-
-    velocity = velocity.normalized() * speed;
-
-    if (weapon != null) {
-      if (keysPressed.contains(LogicalKeyboardKey.space)) {
-        weapon!.fire();
-      }
-    }
-
-    return true;
-  }
-
-  void onTapDown() {
-    if (weapon != null) {
+      weapon!.angle = angle;
+      weapon!.setFacing(angle.abs() < pi / 2);
       weapon!.fire();
     }
   }
 
-  void onMouseMove(Vector2 mousePosition) {
-    if (gameRef.isMobile) {
-      return;
-    }
+  void _handleKeyboardInput(Set<LogicalKeyboardKey> keysPressed) {
+    velocity = Vector2.zero();
 
-    final direction = (mousePosition - gameRef.size / 2);
-    final angle = atan2(direction.y, direction.x);
+    if (keysPressed.contains(LogicalKeyboardKey.keyW)) velocity.y -= 1;
+    if (keysPressed.contains(LogicalKeyboardKey.keyS)) velocity.y += 1;
+    if (keysPressed.contains(LogicalKeyboardKey.keyA)) velocity.x -= 1;
+    if (keysPressed.contains(LogicalKeyboardKey.keyD)) velocity.x += 1;
 
-    if (weapon != null) {
-      weapon!.angle = angle;
-      weapon!.setFacing(angle.abs() < pi / 2);
+    velocity = velocity.normalized() * _speed;
+
+    if (weapon != null && keysPressed.contains(LogicalKeyboardKey.space)) {
+      weapon!.fire();
     }
+  }
+
+  void _updateAnimation() {
+    if (velocity != Vector2.zero()) {
+      final facing = _determineDirection(velocity);
+
+      switch (facing) {
+        case 'north':
+          priority = 2;
+          weapon?.priority = 1;
+          animation = upAnimation;
+          break;
+        case 'south':
+          priority = 1;
+          weapon?.priority = 2;
+          animation = downAnimation;
+          break;
+        case 'west':
+          priority = 2;
+          weapon?.priority = 1;
+          animation = leftAnimation;
+          break;
+        case 'east':
+          priority = 1;
+          weapon?.priority = 2;
+          animation = rightAnimation;
+          break;
+      }
+    } else {
+      animation = idleAnimation;
+    }
+  }
+
+  String _determineDirection(Vector2 direction) {
+    if (direction.x.abs() > direction.y.abs()) {
+      return direction.x > 0 ? 'east' : 'west';
+    }
+    return direction.y > 0 ? 'south' : 'north';
   }
 }
