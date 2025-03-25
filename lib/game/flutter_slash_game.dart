@@ -31,14 +31,13 @@ class FlutterSlashGame extends FlameGame
     await gameState.initialize(this);
 
     // 🎮 Score-Anzeige hinzufügen
-    OptionsManager.onVolumeChange.listen((volume) {
-      FlameAudio.bgm.audioPlayer.setVolume(volume);
-    });
+
 
     pauseEngine();
   }
 
   void gameOver() {
+    gameState.timer.cancel();
     overlays.add('GameOverScreen');
   }
 

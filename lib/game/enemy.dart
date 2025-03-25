@@ -15,7 +15,7 @@ class EnemyCharacter extends SpriteAnimationComponent
   static const double _spriteHeight = 16.0;
   static const double _animationSpeed = 0.1;
   static const double _scalingFactor = 3;
-  static const double _minSeparation = 300.0;
+  static const double _minSeparation = 500.0;
   static const double _separationWeight = 20;
   static const double _alignmentWeight = 0.5;
   static const double _cohesionWeight = 0.125;
@@ -71,8 +71,8 @@ class EnemyCharacter extends SpriteAnimationComponent
   void _initializePosition() {
     final random = Random();
     do {
-      position.x = random.nextDouble() * gameRef.size.x;
-      position.y = random.nextDouble() * gameRef.size.y;
+      position.x = random.nextDouble() * gameRef.size.x * 2 + player.position.x - gameRef.size.x;
+      position.y = random.nextDouble() * gameRef.size.y * 2 + player.position.y - gameRef.size.y;
     } while (_isPositionTooCloseToCenter());
   }
 
@@ -88,6 +88,7 @@ class EnemyCharacter extends SpriteAnimationComponent
     if (other is Bullet) {
       other.removeFromParent();
       removeFromParent();
+      gameRef.gameState.enemies.remove(this);
       gameRef.gameState.score++;
     }
   }

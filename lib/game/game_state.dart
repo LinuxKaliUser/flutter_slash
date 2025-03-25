@@ -37,6 +37,7 @@ class GameState {
       generateEnemies++;
       var enemyList =
           List.generate(generateEnemies, (_) => EnemyCharacter(player));
+      enemies.addAll(enemyList);
       for (var enemy in enemyList) {
         game.world.add(enemy);
         enemy.flock = enemies;
@@ -46,6 +47,10 @@ class GameState {
     FlameAudio.bgm.initialize();
     FlameAudio.bgm.play('background_music.mp3',
         volume: await OptionsManager.loadVolume());
+    OptionsManager.onVolumeChange.listen((volume) {
+      FlameAudio.bgm.audioPlayer.setVolume(volume);
+    });
+
     game.camera.viewport.add(ScoreText());
 
     game.camera.follow(player);
@@ -55,7 +60,6 @@ class GameState {
     game.world.children.toList().forEach((child) {
       child.removeFromParent();
     });
-    timer.cancel();
     score = 0;
 
     initialize(game);
