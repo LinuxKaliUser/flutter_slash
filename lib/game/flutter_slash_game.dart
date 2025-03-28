@@ -1,11 +1,7 @@
 import 'package:flame/events.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_slash/game/game_state.dart';
-import 'package:flutter_slash/game/score_text.dart';
-
-import 'package:flutter_slash/manager/options_manager.dart';
 
 class FlutterSlashGame extends FlameGame
     with
@@ -23,7 +19,7 @@ class FlutterSlashGame extends FlameGame
   Future<void> onLoad() async {
     await super.onLoad();
 
-    isWeb = isSkiaWeb | isSkwasm;
+    isWeb = kIsWeb;
     isMobile = defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS;
 
