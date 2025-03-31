@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/painting.dart';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
@@ -44,13 +46,12 @@ class Bullet extends SpriteComponent with HasGameRef<FlutterSlashGame> {
   }
 
   void _checkBounds() {
+    final maxDistance =
+        sqrt(gameRef.size.x * gameRef.size.x + gameRef.size.y * gameRef.size.y);
     final playerPosition = gameRef.gameState.player.position;
-    final halfScreenSize = gameRef.size / 2;
+    final distance = playerPosition.distanceTo(position);
 
-    if (position.x < playerPosition.x - halfScreenSize.x / 2 ||
-        position.x > playerPosition.x + halfScreenSize.x / 2 ||
-        position.y < playerPosition.y - halfScreenSize.y / 2 ||
-        position.y > playerPosition.y + halfScreenSize.y / 2) {
+    if (distance > maxDistance) {
       removeFromParent();
     }
   }
