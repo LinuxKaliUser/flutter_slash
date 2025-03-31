@@ -23,7 +23,7 @@ class FlutterSlashGame extends FlameGame
   Future<void> onLoad() async {
     await super.onLoad();
 
-    isWeb = isSkiaWeb | isSkwasm;
+    isWeb = kIsWeb;
     isMobile = defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS;
 
