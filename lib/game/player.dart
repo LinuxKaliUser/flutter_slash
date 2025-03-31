@@ -154,20 +154,20 @@ class PlayerCharacter extends SpriteAnimationComponent
     movementJoystick = JoystickComponent(
       knob: CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
       background: CircleComponent(
-        radius: 90,
+        radius: 70,
         paint: Paint()..color = Colors.grey.withOpacity(0.5),
       ),
-      margin: const EdgeInsets.only(left: 50, bottom: 50),
+      margin: const EdgeInsets.only(left: 40, bottom: 40),
       priority: 10,
     );
 
     fireJoystick = JoystickComponent(
       knob: CircleComponent(radius: 30, paint: Paint()..color = Colors.blue),
       background: CircleComponent(
-        radius: 90,
+        radius: 70,
         paint: Paint()..color = Colors.grey.withOpacity(0.5),
       ),
-      margin: const EdgeInsets.only(right: 50, bottom: 50),
+      margin: const EdgeInsets.only(right: 40, bottom: 40),
       priority: 10,
     );
 
