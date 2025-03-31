@@ -1,4 +1,6 @@
 import 'dart:io';
+// TODO: Find a better alternative so this doesn't need to be commented in/out based on build type
+import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +32,14 @@ class MainMenu extends StatelessWidget {
           _buildMenuButton('Options', () {
             game.overlays.add('OptionsMenu');
           }),
+          if (game.isWeb) ...[
+            const SizedBox(height: 20),
+            _buildMenuButton('Download APK', () async {
+              const apkUrl =
+                  'https://flutter-slash.coll.dev/assets/flutter-slash.apk'; // Replace with your APK URL
+              html.window.open(apkUrl, '_blank');
+            }),
+          ],
           if (!game.isWeb) ...[
             const SizedBox(height: 20),
             _buildMenuButton('Exit', () {
