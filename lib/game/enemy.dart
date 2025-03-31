@@ -87,6 +87,7 @@ class EnemyCharacter extends SpriteAnimationComponent
     super.onCollisionStart(intersectionPoints, other);
     if (other is Bullet) {
       other.removeFromParent();
+      flock.remove(this);
       removeFromParent();
       gameRef.gameState.score++;
     }
