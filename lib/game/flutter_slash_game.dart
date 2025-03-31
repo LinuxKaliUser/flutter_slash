@@ -27,6 +27,10 @@ class FlutterSlashGame extends FlameGame
     isMobile = defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS;
 
+    if (isMobile) {
+      camera.viewfinder.zoom = 0.3;
+    }
+
     gameState = GameState();
     await gameState.initialize(this);
 
@@ -88,7 +92,4 @@ class FlutterSlashGame extends FlameGame
     gameState.player.onTapDown();
     gameState.player.onMouseMove(event.deviceStartPosition + event.deviceDelta);
   }
-
 }
-
-
