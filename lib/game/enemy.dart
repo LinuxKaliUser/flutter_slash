@@ -15,7 +15,8 @@ class EnemyCharacter extends SpriteAnimationComponent
   static const double _spriteHeight = 16.0;
   static const double _animationSpeed = 0.1;
   static const double _scalingFactor = 3;
-  static const double _minSeparation = 300.0;
+  static const double _minSeparation = 420.0;
+  static const double _maxSeparation = 960.0;
   static const double _separationWeight = 20;
   static const double _alignmentWeight = 0.5;
   static const double _cohesionWeight = 0.125;
@@ -39,9 +40,12 @@ class EnemyCharacter extends SpriteAnimationComponent
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    add(RectangleHitbox());
+
     await _loadAnimations();
+
     _initializePosition();
+
+    add(RectangleHitbox());
   }
 
   Future<void> _loadAnimations() async {
@@ -70,15 +74,10 @@ class EnemyCharacter extends SpriteAnimationComponent
 
   void _initializePosition() {
     final random = Random();
-    do {
-      position.x = random.nextDouble() * gameRef.size.x;
-      position.y = random.nextDouble() * gameRef.size.y;
-    } while (_isPositionTooCloseToCenter());
-  }
-
-  bool _isPositionTooCloseToCenter() {
-    final center = gameRef.size / 2;
-    return (position - center).length < _minSeparation;
+    final angle = random.nextDouble() * 2 * pi;
+    final radius = _minSeparation + random.nextDouble() * (_maxSeparation - _minSeparation);
+    position.x = player.position.x + cos(angle) * radius;
+    position.y = player.position.y + sin(angle) * radius;
   }
 
   @override
@@ -96,6 +95,7 @@ class EnemyCharacter extends SpriteAnimationComponent
   @override
   void update(double dt) {
     super.update(dt);
+
     _applyFlockingBehavior();
     _moveTowardsPlayer();
     _updatePosition(dt);
